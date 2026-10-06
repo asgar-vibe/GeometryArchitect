@@ -1,0 +1,183 @@
+/* ==========================================================================
+   GEOMETRY ARCHITECT - SCI-FI SPACE BLUEPRINT STYLESHEET
+   ========================================================================== */
+
+@import url('https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@400;600;700&family=JetBrains+Mono:wght@400;500;700&family=Outfit:wght@400;500;600;700&display=swap');
+
+:root {
+  --blueprint-bg: #050a16;
+  --blueprint-grid: rgba(56, 189, 248, 0.08);
+  --cyan-glow: #06b6d4;
+  --neon-blue: #38bdf8;
+  --laser-red: #ff0055;
+}
+
+body {
+  font-family: 'Outfit', sans-serif;
+  background-color: var(--blueprint-bg);
+  color: #e2e8f0;
+  overflow-x: hidden;
+  user-select: none;
+}
+
+.font-mono {
+  font-family: 'JetBrains Mono', monospace;
+}
+
+.font-tech {
+  font-family: 'Chakra Petch', sans-serif;
+}
+
+/* Custom Blueprint Card with Sci-Fi Angled Corners */
+.blueprint-card {
+  background: rgba(11, 20, 38, 0.85);
+  backdrop-filter: blur(12px);
+  border: 1px solid rgba(56, 189, 248, 0.25);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5), inset 0 0 16px rgba(56, 189, 248, 0.04);
+  position: relative;
+}
+
+.blueprint-card::before {
+  content: '';
+  position: absolute;
+  top: -1px;
+  left: -1px;
+  width: 8px;
+  height: 8px;
+  border-top: 2px solid #38bdf8;
+  border-left: 2px solid #38bdf8;
+}
+
+.blueprint-card::after {
+  content: '';
+  position: absolute;
+  bottom: -1px;
+  right: -1px;
+  width: 8px;
+  height: 8px;
+  border-bottom: 2px solid #38bdf8;
+  border-right: 2px solid #38bdf8;
+}
+
+/* Interactive Sci-Fi Button with Glow */
+.btn-scifi {
+  position: relative;
+  background: rgba(14, 165, 233, 0.1);
+  border: 1px solid rgba(56, 189, 248, 0.4);
+  color: #e0f2fe;
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.btn-scifi:hover:not(:disabled) {
+  background: rgba(14, 165, 233, 0.25);
+  border-color: #38bdf8;
+  color: #ffffff;
+  box-shadow: 0 0 15px rgba(56, 189, 248, 0.4);
+  transform: translateY(-1px);
+}
+
+.btn-scifi:active:not(:disabled) {
+  transform: translateY(0);
+}
+
+.btn-scifi.active {
+  background: rgba(6, 182, 212, 0.3);
+  border-color: #06b6d4;
+  color: #ffffff;
+  box-shadow: 0 0 20px rgba(6, 182, 212, 0.5), inset 0 0 10px rgba(6, 182, 212, 0.3);
+}
+
+/* Primary RUN SIMULATION Button with Pulsing Laser Glow */
+.btn-run-simulation {
+  background: linear-gradient(135deg, rgba(255, 0, 85, 0.8) 0%, rgba(225, 29, 72, 0.9) 100%);
+  border: 1px solid #ff3377;
+  box-shadow: 0 0 25px rgba(255, 0, 85, 0.5), inset 0 0 10px rgba(255, 255, 255, 0.2);
+  transition: all 0.25s ease;
+  animation: pulse-glow 2s infinite alternate;
+}
+
+.btn-run-simulation:hover:not(:disabled) {
+  background: linear-gradient(135deg, rgba(255, 0, 85, 1) 0%, rgba(244, 63, 94, 1) 100%);
+  box-shadow: 0 0 35px rgba(255, 0, 85, 0.8);
+  transform: scale(1.02);
+}
+
+@keyframes pulse-glow {
+  0% {
+    box-shadow: 0 0 15px rgba(255, 0, 85, 0.4);
+  }
+  100% {
+    box-shadow: 0 0 30px rgba(255, 0, 85, 0.75), inset 0 0 15px rgba(255, 255, 255, 0.3);
+  }
+}
+
+/* Canvas Container Blueprint Border */
+.canvas-wrapper {
+  position: relative;
+  border: 1px solid rgba(56, 189, 248, 0.3);
+  box-shadow: 0 0 40px rgba(3, 7, 18, 0.8), inset 0 0 20px rgba(56, 189, 248, 0.05);
+}
+
+.canvas-wrapper::before {
+  content: 'SYSTEM: EUCLIDEAN COORD [2D]';
+  position: absolute;
+  top: 8px;
+  left: 12px;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 9px;
+  color: rgba(56, 189, 248, 0.5);
+  letter-spacing: 0.1em;
+  pointer-events: none;
+}
+
+/* Subtle CRT Scanline Overlay */
+.scanlines {
+  background: linear-gradient(
+    rgba(18, 16, 16, 0) 50%, 
+    rgba(0, 0, 0, 0.25) 50%
+  ), linear-gradient(
+    90deg,
+    rgba(255, 0, 0, 0.02),
+    rgba(0, 255, 0, 0.01),
+    rgba(0, 0, 255, 0.02)
+  );
+  background-size: 100% 3px, 6px 100%;
+  pointer-events: none;
+}
+
+/* Custom Scrollbar for Briefing */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: rgba(15, 23, 42, 0.6);
+}
+
+::-webkit-scrollbar-thumb {
+  background: rgba(56, 189, 248, 0.3);
+  border-radius: 3px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(56, 189, 248, 0.6);
+}
+
+/* Modal Victory Hologram Animation */
+@keyframes holo-fade-in {
+  from {
+    opacity: 0;
+    transform: scale(0.92) translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
+}
+
+.animate-victory-modal {
+  animation: holo-fade-in 0.35s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
