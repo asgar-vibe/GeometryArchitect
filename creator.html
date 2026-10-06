@@ -1,0 +1,379 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Geometry Architect - Creator Studio (Level Editor)</title>
+  <meta name="description" content="Visual Level Editor and CAD Studio for Geometry Architect. Design, test, and export custom missions.">
+  
+  <!-- Tailwind CSS v3 (CDN Standalone) -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          colors: {
+            blueprint: {
+              950: '#030712',
+              900: '#050a16',
+              800: '#070e1e',
+              700: '#0b162c',
+              600: '#132347',
+            },
+            neon: {
+              cyan: '#06b6d4',
+              blue: '#38bdf8',
+              pink: '#ff0055',
+              emerald: '#10b981'
+            }
+          }
+        }
+      }
+    }
+  </script>
+
+  <!-- Custom Blueprint Stylesheet -->
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body class="bg-blueprint-900 text-slate-100 min-h-screen flex flex-col font-sans select-none overflow-x-hidden">
+
+  <!-- ======================================================================
+       HEADER / TOP NAVIGATION BAR
+       ====================================================================== -->
+  <header class="border-b border-sky-900/60 bg-blueprint-800/90 backdrop-blur-md px-6 py-3 flex items-center justify-between sticky top-0 z-30">
+    <!-- Brand / Title -->
+    <div class="flex items-center space-x-3">
+      <div class="w-9 h-9 rounded border border-cyan-400/50 bg-cyan-950/60 flex items-center justify-center text-cyan-400 font-bold shadow-[0_0_12px_rgba(6,182,212,0.4)]">
+        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path>
+        </svg>
+      </div>
+      <div>
+        <div class="flex items-center space-x-2">
+          <h1 class="text-lg font-bold tracking-wider text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 via-sky-200 to-blue-400 font-tech">
+            CREATOR STUDIO
+          </h1>
+          <span class="text-[10px] uppercase font-mono px-1.5 py-0.5 rounded bg-emerald-950/80 text-emerald-300 border border-emerald-500/30">
+            CAD EDITOR
+          </span>
+        </div>
+        <p class="text-xs text-slate-400 font-mono tracking-tight hidden sm:block">
+          Geometry Architect Level Designer & Physics Testing Suite
+        </p>
+      </div>
+    </div>
+
+    <!-- Center: Preset Loader -->
+    <div class="flex items-center space-x-3">
+      <label for="preset-select" class="text-xs text-sky-400 font-mono hidden md:inline-block">LOAD TEMPLATE:</label>
+      <div class="relative">
+        <select id="preset-select" class="bg-blueprint-700/80 border border-sky-500/40 text-cyan-200 text-xs rounded px-3 py-1.5 pr-8 focus:outline-none focus:border-cyan-400 font-mono cursor-pointer shadow-inner appearance-none">
+          <option value="">-- Blank Mission --</option>
+          <!-- Dynamically populated from levelData -->
+        </select>
+        <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-cyan-400 text-xs">
+          ▼
+        </div>
+      </div>
+    </div>
+
+    <!-- Right Controls: Test, Export, Return to Game -->
+    <div class="flex items-center space-x-2.5">
+      <button id="btn-toggle-test" class="btn-scifi px-3.5 py-1.5 rounded text-xs font-mono font-bold flex items-center space-x-1.5 text-amber-300 border-amber-500/40 hover:border-amber-400">
+        <span id="test-mode-icon">▶</span>
+        <span id="test-mode-label">TEST PUZZLE</span>
+      </button>
+
+      <button id="btn-export-code" class="btn-scifi active px-4 py-1.5 rounded text-xs font-mono font-bold flex items-center space-x-1.5 text-cyan-200 bg-cyan-950/60 border-cyan-400">
+        <span>💾</span>
+        <span>EXPORT JS CODE</span>
+      </button>
+
+      <a href="index.html" class="btn-scifi px-3 py-1.5 rounded text-xs font-mono text-slate-300 hover:text-white flex items-center space-x-1">
+        <span>←</span>
+        <span class="hidden sm:inline">PLAY GAME</span>
+      </a>
+    </div>
+  </header>
+
+  <!-- ======================================================================
+       MAIN WORKSPACE
+       ====================================================================== -->
+  <main class="flex-1 max-w-[1680px] w-full mx-auto p-3 md:p-5 grid grid-cols-1 lg:grid-cols-12 gap-4">
+    
+    <!-- LEFT COLUMN: Canvas CAD & Tools (8 Cols) -->
+    <section class="lg:col-span-8 flex flex-col space-y-3">
+      
+      <!-- Creator Palette Ribbon -->
+      <div class="blueprint-card rounded-lg p-2.5 flex flex-wrap items-center justify-between gap-2">
+        <!-- Entity Placement Tools -->
+        <div class="flex flex-wrap items-center gap-1.5">
+          <!-- Select / Move -->
+          <button id="tool-select" class="btn-scifi active px-2.5 py-1.5 rounded text-xs flex items-center space-x-1 font-mono" title="Select & Drag Entities [V]">
+            <span>↖</span>
+            <span>SELECT [V]</span>
+          </button>
+
+          <!-- Mirror Line -->
+          <button id="tool-place-mirror" class="btn-scifi px-2.5 py-1.5 rounded text-xs flex items-center space-x-1.5 font-mono text-sky-300" title="Place Speculum Mirror Line [M]">
+            <span class="w-2.5 h-1 rounded bg-sky-400 shadow-[0_0_6px_#38bdf8]"></span>
+            <span>MIRROR [M]</span>
+          </button>
+
+          <!-- Obstacle Barrier -->
+          <button id="tool-place-obstacle" class="btn-scifi px-2.5 py-1.5 rounded text-xs flex items-center space-x-1.5 font-mono text-rose-300" title="Place Blast Barrier Wall [O]">
+            <span class="w-2.5 h-1 rounded bg-rose-500 shadow-[0_0_6px_#ef4444]"></span>
+            <span>OBSTACLE [O]</span>
+          </button>
+
+          <!-- Guide Line -->
+          <button id="tool-place-guide" class="btn-scifi px-2.5 py-1.5 rounded text-xs flex items-center space-x-1 font-mono text-slate-300" title="Place Dashed Guide Line [G]">
+            <span class="w-2.5 h-0.5 rounded bg-slate-400"></span>
+            <span>GUIDE [G]</span>
+          </button>
+
+          <!-- Laser Emitter -->
+          <button id="tool-place-emitter" class="btn-scifi px-2.5 py-1.5 rounded text-xs flex items-center space-x-1.5 font-mono text-cyan-300" title="Place Laser Emitter Source [E]">
+            <span class="w-2 h-2 rounded-full bg-cyan-400 shadow-[0_0_6px_#06b6d4]"></span>
+            <span>EMITTER [E]</span>
+          </button>
+
+          <!-- Target Receiver -->
+          <button id="tool-place-target" class="btn-scifi px-2.5 py-1.5 rounded text-xs flex items-center space-x-1.5 font-mono text-emerald-300" title="Place Target Receiver [T]">
+            <span class="w-2 h-2 rounded-full bg-emerald-400 shadow-[0_0_6px_#10b981]"></span>
+            <span>TARGET [T]</span>
+          </button>
+
+          <!-- Shield Node -->
+          <button id="tool-place-node" class="btn-scifi px-2.5 py-1.5 rounded text-xs flex items-center space-x-1.5 font-mono text-blue-300" title="Place Circumcenter Shield Node [N]">
+            <span class="w-2 h-2 rounded-full bg-blue-400"></span>
+            <span>NODE [N]</span>
+          </button>
+
+          <!-- Delete Tool -->
+          <button id="tool-delete-entity" class="btn-scifi px-2 py-1.5 rounded text-xs flex items-center space-x-1 font-mono text-slate-400 hover:text-rose-300" title="Delete Entity [Del]">
+            <span>🗑</span>
+            <span>DEL</span>
+          </button>
+        </div>
+
+        <!-- Snapping & Grid Options -->
+        <div class="flex items-center space-x-2 text-xs font-mono">
+          <label class="flex items-center space-x-1 cursor-pointer">
+            <span class="text-slate-400">GRID:</span>
+            <select id="grid-snap-select" class="bg-blueprint-700 border border-sky-500/30 text-cyan-300 text-xs rounded px-2 py-1">
+              <option value="20">20px Grid</option>
+              <option value="10">10px Grid</option>
+              <option value="0">Free (Off)</option>
+            </select>
+          </label>
+
+          <button id="btn-clear-canvas" class="btn-scifi px-2.5 py-1 rounded text-xs font-mono text-rose-400 hover:text-rose-300" title="Clear all scene entities">
+            ✕ CLEAR
+          </button>
+        </div>
+      </div>
+
+      <!-- Blueprint Interactive Canvas Area -->
+      <div class="canvas-wrapper rounded-lg overflow-hidden flex-1 relative bg-blueprint-950 min-h-[520px]">
+        <canvas id="blueprint-canvas" class="w-full h-full block cursor-crosshair"></canvas>
+        <div class="scanlines absolute inset-0 pointer-events-none opacity-40"></div>
+        
+        <!-- Test Mode Banner Overlay (visible only in test simulation mode) -->
+        <div id="test-mode-banner" class="hidden absolute top-3 right-4 px-3 py-1 rounded bg-amber-950/80 border border-amber-500/60 text-amber-300 text-xs font-mono shadow-lg flex items-center space-x-2 z-20">
+          <span class="w-2 h-2 rounded-full bg-amber-400 animate-ping"></span>
+          <span>TEST MODE ACTIVE (PLAYER POV)</span>
+        </div>
+
+        <!-- Test Victory Banner -->
+        <div id="test-victory-banner" class="hidden absolute top-14 left-1/2 -translate-x-1/2 px-6 py-3 rounded-lg bg-emerald-950/95 border border-emerald-400 text-emerald-200 text-sm font-mono shadow-[0_0_30px_rgba(16,185,129,0.5)] z-20 text-center animate-bounce">
+          <div class="font-bold font-tech text-base text-white">MISSION OBJECTIVE ACCOMPLISHED!</div>
+          <div id="test-victory-sub" class="text-xs text-emerald-300 mt-0.5">Laser beam struck Receiver with required reflections.</div>
+        </div>
+
+        <!-- Test Mode Floating Controls Overlay (Visible during test mode) -->
+        <div id="test-controls-bar" class="hidden absolute bottom-3 inset-x-3 px-4 py-2.5 rounded-lg bg-blueprint-900/90 backdrop-blur-md border border-amber-500/40 shadow-2xl flex flex-wrap items-center justify-between gap-2 z-20">
+          <div class="flex items-center space-x-1.5" id="test-player-tools">
+            <button id="test-tool-aim" class="btn-scifi active px-2.5 py-1 rounded text-xs font-mono text-cyan-300">🎯 AIM [A]</button>
+            <button id="test-tool-line" class="btn-scifi px-2.5 py-1 rounded text-xs font-mono text-sky-300">📏 LINE [L]</button>
+            <button id="test-tool-circle" class="btn-scifi px-2.5 py-1 rounded text-xs font-mono text-indigo-300">⭕ CIRCLE [C]</button>
+            <button id="test-tool-point" class="btn-scifi px-2.5 py-1 rounded text-xs font-mono text-white">⦿ POINT [P]</button>
+            <button id="test-btn-undo" class="btn-scifi px-2 py-1 rounded text-xs font-mono text-slate-300" title="Undo">↩ UNDO</button>
+            <button id="test-btn-clear" class="btn-scifi px-2 py-1 rounded text-xs font-mono text-slate-300" title="Clear player constructions">✕ CLEAR</button>
+          </div>
+          
+          <div class="flex items-center space-x-2">
+            <button id="test-btn-fire" class="btn-run-simulation px-5 py-1.5 rounded text-xs font-mono font-bold text-white tracking-wider flex items-center space-x-1.5 cursor-pointer">
+              <span>⚡</span>
+              <span id="test-fire-label">FIRE LASER</span>
+            </button>
+            <button id="test-btn-exit" class="btn-scifi px-3 py-1.5 rounded text-xs font-mono text-amber-300 border-amber-500/40">
+              EXIT TEST
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Canvas Footer Status HUD -->
+      <div class="blueprint-card rounded-md px-4 py-2 flex items-center justify-between text-xs font-mono">
+        <div class="flex items-center">
+          <span id="status-indicator" class="w-2 h-2 rounded-full bg-cyan-400 mr-2 shadow-[0_0_8px_#06b6d4]"></span>
+          <span id="status-message" class="text-cyan-200">Editor Ready: Select a tool to place mirrors, walls, or nodes</span>
+        </div>
+        <div class="text-[11px] text-slate-400 hidden sm:flex items-center space-x-4">
+          <span id="entity-counter">ENTITIES: 0</span>
+          <span id="coord-hud">X: 0, Y: 0</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- RIGHT COLUMN: Mission & Entity Inspector (4 Cols) -->
+    <aside class="lg:col-span-4 flex flex-col space-y-3.5">
+      
+      <!-- Inspector Tabs -->
+      <div class="flex border-b border-sky-800/60 font-mono text-xs">
+        <button id="tab-mission-btn" class="flex-1 py-2 font-bold border-b-2 border-cyan-400 text-cyan-300 bg-blueprint-800/40">
+          MISSION SETTINGS
+        </button>
+        <button id="tab-entities-btn" class="flex-1 py-2 font-bold text-slate-400 hover:text-slate-200 border-b-2 border-transparent">
+          ENTITIES (<span id="tab-entity-count">0</span>)
+        </button>
+      </div>
+
+      <!-- Tab Content 1: Mission Settings Form -->
+      <div id="tab-mission-content" class="blueprint-card rounded-lg p-4 space-y-3 max-h-[72vh] overflow-y-auto">
+        <div class="space-y-1">
+          <label for="cfg-id" class="text-[11px] font-mono text-sky-400">MISSION ID (UNIQUE):</label>
+          <input type="text" id="cfg-id" value="custom-mission-1" class="w-full bg-blueprint-700/80 border border-sky-500/30 rounded px-2.5 py-1.5 text-xs text-white font-mono focus:border-cyan-400 outline-none">
+        </div>
+
+        <div class="space-y-1">
+          <label for="cfg-title" class="text-[11px] font-mono text-sky-400">MISSION TITLE:</label>
+          <input type="text" id="cfg-title" value="Custom Mission 1" class="w-full bg-blueprint-700/80 border border-sky-500/30 rounded px-2.5 py-1.5 text-xs text-white font-sans focus:border-cyan-400 outline-none">
+        </div>
+
+        <div class="space-y-1">
+          <label for="cfg-subtitle" class="text-[11px] font-mono text-sky-400">GEOMETRIC PRINCIPLE / SUBTITLE:</label>
+          <input type="text" id="cfg-subtitle" value="Euclidean Laser Construction" class="w-full bg-blueprint-700/80 border border-sky-500/30 rounded px-2.5 py-1.5 text-xs text-white font-sans focus:border-cyan-400 outline-none">
+        </div>
+
+        <div class="space-y-1">
+          <label for="cfg-briefing" class="text-[11px] font-mono text-sky-400">BRIEFING & NARRATIVE:</label>
+          <textarea id="cfg-briefing" rows="3" class="w-full bg-blueprint-700/80 border border-sky-500/30 rounded px-2.5 py-1.5 text-xs text-slate-200 font-sans focus:border-cyan-400 outline-none leading-relaxed">Transmit the quantum laser beam from Emitter S to Target Receiver by calculating the reflection point!</textarea>
+        </div>
+
+        <div class="space-y-1">
+          <label for="cfg-theory" class="text-[11px] font-mono text-sky-400">ARCHITECT'S FIELD MANUAL (HINT):</label>
+          <textarea id="cfg-theory" rows="3" class="w-full bg-blueprint-700/80 border border-sky-500/30 rounded px-2.5 py-1.5 text-xs text-slate-200 font-sans focus:border-cyan-400 outline-none leading-relaxed">💡 Architect's Field Manual:
+Reflect the target point across the mirror to construct virtual image T'.
+Connect Emitter to T' to locate the exact reflection point on the mirror!</textarea>
+        </div>
+
+        <!-- Win Condition Settings -->
+        <div class="border-t border-sky-800/60 pt-3 space-y-2">
+          <span class="text-[11px] font-mono text-cyan-300 font-bold">WIN CONDITION CONFIGURATION</span>
+          
+          <div class="grid grid-cols-2 gap-2 text-xs font-mono">
+            <div>
+              <label for="cfg-win-type" class="text-[10px] text-slate-400">TYPE:</label>
+              <select id="cfg-win-type" class="w-full bg-blueprint-700 border border-sky-500/30 rounded px-2 py-1 text-cyan-200">
+                <option value="laser_hit_target">laser_hit_target</option>
+                <option value="circumcircle_fit">circumcircle_fit</option>
+              </select>
+            </div>
+            <div>
+              <label for="cfg-tolerance" class="text-[10px] text-slate-400">TOLERANCE (PX):</label>
+              <input type="number" id="cfg-tolerance" value="15" min="5" max="50" class="w-full bg-blueprint-700 border border-sky-500/30 rounded px-2 py-1 text-white">
+            </div>
+            <div>
+              <label for="cfg-min-bounces" class="text-[10px] text-slate-400">MIN BOUNCES:</label>
+              <input type="number" id="cfg-min-bounces" value="1" min="0" max="10" class="w-full bg-blueprint-700 border border-sky-500/30 rounded px-2 py-1 text-white">
+            </div>
+            <div>
+              <label for="cfg-max-bounces" class="text-[10px] text-slate-400">MAX BOUNCES:</label>
+              <input type="number" id="cfg-max-bounces" value="5" min="1" max="15" class="w-full bg-blueprint-700 border border-sky-500/30 rounded px-2 py-1 text-white">
+            </div>
+          </div>
+        </div>
+
+        <!-- Allowed Player Tools -->
+        <div class="border-t border-sky-800/60 pt-3 space-y-2">
+          <span class="text-[11px] font-mono text-cyan-300 font-bold">AVAILABLE PLAYER TOOLS</span>
+          <div class="grid grid-cols-2 gap-2 text-xs font-mono text-slate-300">
+            <label class="flex items-center space-x-1.5 cursor-pointer">
+              <input type="checkbox" id="tool-allow-point" checked class="rounded bg-blueprint-700 text-cyan-400 focus:ring-0">
+              <span>Point Tool [P]</span>
+            </label>
+            <label class="flex items-center space-x-1.5 cursor-pointer">
+              <input type="checkbox" id="tool-allow-line" checked class="rounded bg-blueprint-700 text-cyan-400 focus:ring-0">
+              <span>Line Tool [L]</span>
+            </label>
+            <label class="flex items-center space-x-1.5 cursor-pointer">
+              <input type="checkbox" id="tool-allow-circle" checked class="rounded bg-blueprint-700 text-cyan-400 focus:ring-0">
+              <span>Circle Tool [C]</span>
+            </label>
+            <label class="flex items-center space-x-1.5 cursor-pointer">
+              <input type="checkbox" id="tool-allow-aim" checked class="rounded bg-blueprint-700 text-cyan-400 focus:ring-0">
+              <span>Aim Tool [A]</span>
+            </label>
+          </div>
+        </div>
+      </div>
+
+      <!-- Tab Content 2: Entity Inspector Tree -->
+      <div id="tab-entities-content" class="blueprint-card rounded-lg p-4 space-y-2 hidden max-h-[72vh] overflow-y-auto">
+        <div class="flex items-center justify-between text-xs font-mono text-sky-400 border-b border-sky-800/60 pb-2">
+          <span>SCENE ENTITIES</span>
+          <span id="entity-tree-count">0 items</span>
+        </div>
+        <div id="entity-list-container" class="space-y-1.5 font-mono text-xs text-slate-300">
+          <p class="text-slate-500 italic py-4 text-center">No entities placed yet. Use the toolbar on the left to add items.</p>
+        </div>
+      </div>
+    </aside>
+  </main>
+
+  <!-- ======================================================================
+       EXPORT CODE MODAL
+       ====================================================================== -->
+  <div id="export-modal" class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-md hidden">
+    <div class="blueprint-card max-w-3xl w-full rounded-xl p-6 border border-cyan-400/50 shadow-[0_0_50px_rgba(6,182,212,0.4)] flex flex-col space-y-4 max-h-[90vh]">
+      <div class="flex items-center justify-between border-b border-sky-800/60 pb-3">
+        <div>
+          <span class="text-[10px] font-mono tracking-widest text-cyan-400 uppercase">LEVEL DATA SYSTEM EXPORT</span>
+          <h3 class="text-base font-bold font-tech text-white">READY FOR js/levels.js</h3>
+        </div>
+        <button id="btn-close-export" class="text-slate-400 hover:text-white text-lg">✕</button>
+      </div>
+
+      <p class="text-xs text-slate-300 font-sans">
+        Copy this object and append it into the <code class="text-cyan-300 bg-sky-950 px-1 py-0.5 rounded font-mono">levelData</code> array inside <code class="text-cyan-300 bg-sky-950 px-1 py-0.5 rounded font-mono">js/levels.js</code>:
+      </p>
+
+      <div class="relative flex-1 min-h-[300px]">
+        <textarea id="export-code-area" readonly class="w-full h-full bg-blueprint-950 border border-sky-600/40 rounded-lg p-3.5 text-xs text-sky-200 font-mono resize-none focus:outline-none select-all"></textarea>
+      </div>
+
+      <div class="flex items-center justify-between pt-2">
+        <span id="copy-status" class="text-xs font-mono text-emerald-400 hidden">✓ Copied to clipboard!</span>
+        <div class="flex items-center space-x-2 ml-auto">
+          <button id="btn-copy-code" class="btn-scifi active px-4 py-2 rounded text-xs font-mono text-white flex items-center space-x-1.5">
+            <span>📋</span>
+            <span>COPY CODE</span>
+          </button>
+          <button id="btn-dismiss-export" class="btn-scifi px-3 py-2 rounded text-xs font-mono text-slate-300">
+            CLOSE
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Scripts -->
+  <script src="js/math.js"></script>
+  <script src="js/levels.js"></script>
+  <script src="js/engine.js"></script>
+  <script src="js/creator.js"></script>
+</body>
+</html>

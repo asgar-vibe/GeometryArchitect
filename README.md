@@ -19,14 +19,27 @@ The core **Geometry Game Engine** is completely decoupled from the **Level Data 
 ```
 GeometryArchitect/
 ├── index.html          # Space Blueprint UI markup + Tailwind CSS v3
+├── creator.html        # Creator Studio: Visual Level Editor & CAD Designer
 ├── css/
 │   └── style.css       # Space blueprint styling, neon glows, scanlines, and UI animations
 └── js/
     ├── math.js         # Vector math & intersections (Line-Line, Line-Circle, Circle-Circle, Ray Reflection)
     ├── levels.js       # Level Data System: 100% decoupled mission definitions
     ├── engine.js       # Core Engine: Canvas render loop, 14px magnetic snapping, audio synthesizer
-    └── main.js         # Controller binding DOM, keyboard shortcuts, sound, and event handlers
+    ├── main.js         # Controller binding DOM, keyboard shortcuts, sound, and event handlers
+    └── creator.js      # Creator Studio engine: Entity placement, test simulation, JS code export
 ```
+
+---
+
+## 🛠️ Level Creator Studio (`creator.html`)
+
+A dedicated CAD environment for teachers, puzzle creators, and students to build custom missions visually:
+- **Visual Entity Placement**: Place Speculum Nano-Mirrors `[M]`, Dark Matter Barriers `[O]`, Guides `[G]`, Laser Emitters `[E]`, Target Receivers `[T]`, and Defense Nodes `[N]`.
+- **Drag & Drop Manipulation**: Select `[V]` and drag whole entities or individual line endpoint handles with magnetic snapping (20px, 10px, or free grid).
+- **Template Loader**: Load any existing mission (Level 1–10) directly into the editor to inspect, tweak, or remix.
+- **Live Test Simulation Mode**: Toggle "TEST PUZZLE" to instantly simulate laser firing and test Euclidean constructions in player POV.
+- **1-Click JS Code Export**: Exports clean, formatted JavaScript code strictly conforming to `js/levels.js` schema with instant clipboard copy.
 
 ---
 
@@ -72,7 +85,7 @@ To add up to 100+ missions, developers only need to append objects to the `level
 
 ---
 
-## 🎮 Mission Catalogue
+## 🎮 Mission Catalogue (Total 10 Missions)
 
 1. **Level 1: First Reflection** — Hero of Alexandria's Principle of Least Distance (1-bounce flat mirror).
 2. **Level 2: Circumcenter Shield** — Triangle Circumcenter Construction via Perpendicular Bisectors.
@@ -80,6 +93,10 @@ To add up to 100+ missions, developers only need to append objects to the `level
 4. **Level 4: Oblique Deflector** — Reflection across an arbitrary 45° diagonal mirror line (90° turn).
 5. **Level 5: Triple Mirror Vault** — 3-bounce zig-zag optical waveguide snaking through staggered pillars.
 6. **Level 6: Periscope Relay** — Submarine periscope optics with parallel 45° mirrors scaling a towering Citadel Wall.
+7. **Level 7: Retroreflector Chamber** — Orthogonal Corner-Cube Optics with 180° antiparallel return into pod transceiver.
+8. **Level 8: The Diamond Resonator** — 4-mirror closed perimeter resonator loop orbiting a central Singularity Core.
+9. **Level 9: The Orthic Prism** — Fagnano's Billiard & Slanted vector transformation $(u, v) \to (-v, -u)$ through 3 cavity mirrors.
+10. **Level 10: The Grandmaster Labyrinth** — Five-stage quantum relay through a 5-mirror citadel maze into the Inner Sanctum.
 
 ---
 
@@ -99,9 +116,9 @@ To add up to 100+ missions, developers only need to append objects to the `level
 3. **Circumcenter Shield Construction:**
    - Evaluates perpendicular bisectors of the triangle edges to find the circumcenter equidistant to all three defense nodes.
 
-4. **Multi-Bounce Waveguides & Slanted Mirrors (Levels 3, 4, 5, 6):**
+4. **Multi-Bounce Waveguides, Slanted Mirrors & Resonators (Levels 3 - 10):**
    - Staggered blast walls obstruct direct line-of-sight and shortcut bypasses.
-   - Enforces minimum bounce thresholds (`minBounces: 1, 2, 3`) with exact mathematical solvability.
+   - Enforces minimum bounce thresholds (`minBounces: 1, 2, 3, 4, 5`) with exact mathematical solvability.
 
 ---
 

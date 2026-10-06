@@ -458,14 +458,19 @@ class GeometryEngine {
       this.mouse.isDown = false;
     };
 
-    this.canvas.addEventListener('mousemove', handlePointerMove);
-    this.canvas.addEventListener('mousedown', handlePointerDown);
-    window.addEventListener('mouseup', handlePointerUp);
+    this._eventListeners = [
+      { target: this.canvas, type: 'mousemove', handler: handlePointerMove, opts: false },
+      { target: this.canvas, type: 'mousedown', handler: handlePointerDown, opts: false },
+      { target: window, type: 'mouseup', handler: handlePointerUp, opts: false },
+      { target: this.canvas, type: 'touchmove', handler: (e) => { e.preventDefault(); handlePointerMove(e); }, opts: { passive: false } },
+      { target: this.canvas, type: 'touchstart', handler: (e) => { e.preventDefault(); handlePointerDown(e); }, opts: { passive: false } },
+      { target: window, type: 'touchend', handler: handlePointerUp, opts: false },
+      { target: this.canvas, type: 'contextmenu', handler: (e) => e.preventDefault(), opts: false }
+    ];
 
-    this.canvas.addEventListener('touchmove', (e) => { e.preventDefault(); handlePointerMove(e); }, { passive: false });
-    this.canvas.addEventListener('touchstart', (e) => { e.preventDefault(); handlePointerDown(e); }, { passive: false });
-    window.addEventListener('touchend', handlePointerUp);
-    this.canvas.addEventListener('contextmenu', (e) => e.preventDefault());
+    for (const l of this._eventListeners) {
+      l.target.addEventListener(l.type, l.handler, l.opts);
+    }
   }
 
   handleDeleteAt(pos) {
@@ -678,11 +683,27 @@ class GeometryEngine {
   // --------------------------------------------------------------------------
 
   startAnimationLoop() {
+    this.isRunning = true;
     const loop = () => {
+      if (!this.isRunning) return;
       this.render();
-      requestAnimationFrame(loop);
+      this.animFrameId = requestAnimationFrame(loop);
     };
-    requestAnimationFrame(loop);
+    this.animFrameId = requestAnimationFrame(loop);
+  }
+
+  destroy() {
+    this.isRunning = false;
+    if (this.animFrameId) {
+      cancelAnimationFrame(this.animFrameId);
+      this.animFrameId = null;
+    }
+    if (this._eventListeners) {
+      for (const l of this._eventListeners) {
+        l.target.removeEventListener(l.type, l.handler, l.opts);
+      }
+      this._eventListeners = [];
+    }
   }
 
   render() {

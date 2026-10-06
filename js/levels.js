@@ -642,7 +642,721 @@ Two parallel 45° inclined mirrors (slope -1) produce consecutive 90° deflectio
       maxBounces: 5,
       successMessage: "SUCCESS: ELEGANT SOLUTION! Classical periscope relay executed. Quantum beam scaled the Citadel Wall into Target Psi!"
     }
-  }
+  },
+
+  // --------------------------------------------------------------------------
+  // LEVEL 7: RETROREFLECTOR CHAMBER (CORNER-CUBE 180° RETURN)
+  // --------------------------------------------------------------------------
+  {
+    id: "level-7",
+    title: "Level 7: Retroreflector Chamber",
+    subtitle: "Orthogonal Corner-Cube Optics (180° Antiparallel Return)",
+    briefing: `Emitter Alpha and Receiver Beta are mounted in the same transceiver pod on the left bulkhead.
+A thick security blast shield directly separates them.
+To the right, an orthogonal retroreflector corner (horizontal floor mirror and vertical wall mirror) reflects rays by 180 degrees.
+
+Objective: Calculate the entry trajectory into the 90° corner trap so the returning beam strikes Receiver Beta precisely!`,
+    geometricTheory: `💡 Architect's Field Manual (Corner-Cube Retroreflection):
+When a beam reflects off two mutually perpendicular mirrors (horizontal then vertical):
+1. The outgoing ray is antiparallel to the incoming ray (slope magnitude |m| = 1/2 is preserved).
+2. The beam leaves Emitter Alpha (240, 260) with slope +1/2.
+3. It strikes Mirror Alpha (Floor, y = 380) at P1 (480, 380) and deflects upward to Mirror Beta (Wall, x = 560) at P2 (560, 340).
+4. Mirror Beta deflects the ray upward-left, returning along y = 1/2(x - 560) + 340 into Receiver Beta (240, 180)!`,
+    canvasSize: { width: 900, height: 560 },
+    availableTools: ["point", "line", "circle", "aim"],
+    emitterConfig: {
+      sourceId: "emitter_Alpha",
+      defaultAngle: 0,
+      canAim: true
+    },
+    initialEntities: [
+      // Mirror Alpha: Floor horizontal mirror (y = 380)
+      {
+        id: "mirror_retro_floor",
+        type: "line",
+        p1: { x: 380, y: 380 },
+        p2: { x: 560, y: 380 },
+        role: "mirror",
+        label: "Mirror Alpha (Floor)",
+        isFixed: true,
+        style: { strokeStyle: "#38bdf8", lineWidth: 4, glow: true }
+      },
+      // Mirror Beta: Right vertical mirror (x = 560)
+      {
+        id: "mirror_retro_wall",
+        type: "line",
+        p1: { x: 560, y: 220 },
+        p2: { x: 560, y: 380 },
+        role: "mirror",
+        label: "Mirror Beta (Wall)",
+        isFixed: true,
+        style: { strokeStyle: "#38bdf8", lineWidth: 4, glow: true }
+      },
+
+      // Security Blast Divider separating Emitter and Receiver
+      {
+        id: "blast_divider",
+        type: "line",
+        p1: { x: 180, y: 220 },
+        p2: { x: 300, y: 220 },
+        role: "obstacle",
+        label: "Pod Isolation Barrier",
+        isFixed: true,
+        style: { strokeStyle: "#ef4444", lineWidth: 6, lineDash: [8, 4] }
+      },
+      // High Ceiling Hazard Shield
+      {
+        id: "ceiling_shield",
+        type: "line",
+        p1: { x: 200, y: 120 },
+        p2: { x: 560, y: 120 },
+        role: "obstacle",
+        label: "High Radiation Ceiling",
+        isFixed: true,
+        style: { strokeStyle: "#f43f5e", lineWidth: 5, lineDash: [6, 3] }
+      },
+
+      // Emitter Alpha (lower pod)
+      {
+        id: "emitter_Alpha",
+        type: "point",
+        x: 240,
+        y: 260,
+        role: "laser_source",
+        label: "Emitter Alpha",
+        isFixed: true,
+        style: { fillStyle: "#06b6d4", radius: 8 }
+      },
+      // Receiver Beta (upper pod)
+      {
+        id: "target_Beta",
+        type: "point",
+        x: 240,
+        y: 180,
+        role: "target",
+        label: "Receiver Beta",
+        isFixed: true,
+        style: { fillStyle: "#10b981", radius: 10, pulsing: true }
+      }
+    ],
+    winCondition: {
+      type: "laser_hit_target",
+      targetId: "target_Beta",
+      tolerance: 15,
+      minBounces: 2,
+      maxBounces: 5,
+      successMessage: "SUCCESS: ELEGANT SOLUTION! 180° corner-cube retroreflection verified. Returning beam engaged Receiver Beta!"
+    }
+  },
+
+  // --------------------------------------------------------------------------
+  // LEVEL 8: THE DIAMOND RESONATOR (FOUR-MIRROR CLOSED CAVITY)
+  // --------------------------------------------------------------------------
+  {
+    id: "level-8",
+    title: "Level 8: The Diamond Resonator",
+    subtitle: "Four-Mirror Perimeter Loop Around a Singularity",
+    briefing: `A critical Dark Matter Singularity occupies the exact center of Sector 8.
+No beam can penetrate the event horizon. Four tactical mirrors enclose the quadrant in an optical resonator cavity:
+Top (Alpha), Right (Beta), Bottom (Gamma), and Left (Delta).
+
+Objective: Execute a continuous 4-mirror perimeter loop around the singularity to deliver energy to Target Gamma!`,
+    geometricTheory: `💡 Architect's Field Manual (Optical Resonator Perimeter):
+A ray reflecting off four planar mirrors can establish a closed diamond orbit with slope magnitude |m| = 2/3:
+1. Aim Emitter S (360, 160) up-right toward P1 (450, 100) on Mirror Alpha.
+2. The beam reflects:
+   - M1 (Top, y = 100) at P1 (450, 100) -> slope +2/3
+   - M2 (Right, x = 720) at P2 (720, 280) -> slope -2/3
+   - M3 (Bottom, y = 460) at P3 (450, 460) -> slope +2/3
+   - M4 (Left, x = 180) at P4 (180, 280) -> slope -2/3
+3. Exiting M4, the beam enters Target Gamma (270, 220) dead center!`,
+    canvasSize: { width: 900, height: 560 },
+    availableTools: ["point", "line", "circle", "aim"],
+    emitterConfig: {
+      sourceId: "emitter_S",
+      defaultAngle: 0,
+      canAim: true
+    },
+    initialEntities: [
+      // 4 Resonator Mirrors
+      {
+        id: "mirror_res_top",
+        type: "line",
+        p1: { x: 360, y: 100 },
+        p2: { x: 540, y: 100 },
+        role: "mirror",
+        label: "Mirror Alpha (Top)",
+        isFixed: true,
+        style: { strokeStyle: "#38bdf8", lineWidth: 4, glow: true }
+      },
+      {
+        id: "mirror_res_right",
+        type: "line",
+        p1: { x: 720, y: 190 },
+        p2: { x: 720, y: 370 },
+        role: "mirror",
+        label: "Mirror Beta (Right)",
+        isFixed: true,
+        style: { strokeStyle: "#38bdf8", lineWidth: 4, glow: true }
+      },
+      {
+        id: "mirror_res_bottom",
+        type: "line",
+        p1: { x: 360, y: 460 },
+        p2: { x: 540, y: 460 },
+        role: "mirror",
+        label: "Mirror Gamma (Bottom)",
+        isFixed: true,
+        style: { strokeStyle: "#38bdf8", lineWidth: 4, glow: true }
+      },
+      {
+        id: "mirror_res_left",
+        type: "line",
+        p1: { x: 180, y: 190 },
+        p2: { x: 180, y: 370 },
+        role: "mirror",
+        label: "Mirror Delta (Left)",
+        isFixed: true,
+        style: { strokeStyle: "#38bdf8", lineWidth: 4, glow: true }
+      },
+
+      // Central Dark Matter Singularity Box (impenetrable core)
+      {
+        id: "singularity_top",
+        type: "line",
+        p1: { x: 360, y: 200 },
+        p2: { x: 540, y: 200 },
+        role: "obstacle",
+        label: "Singularity Core",
+        isFixed: true,
+        style: { strokeStyle: "#ef4444", lineWidth: 6, lineDash: [8, 4] }
+      },
+      {
+        id: "singularity_right",
+        type: "line",
+        p1: { x: 540, y: 200 },
+        p2: { x: 540, y: 360 },
+        role: "obstacle",
+        label: "Singularity Event Horizon",
+        isFixed: true,
+        style: { strokeStyle: "#ef4444", lineWidth: 6, lineDash: [8, 4] }
+      },
+      {
+        id: "singularity_bottom",
+        type: "line",
+        p1: { x: 540, y: 360 },
+        p2: { x: 360, y: 360 },
+        role: "obstacle",
+        label: "Singularity Boundary",
+        isFixed: true,
+        style: { strokeStyle: "#ef4444", lineWidth: 6, lineDash: [8, 4] }
+      },
+      {
+        id: "singularity_left",
+        type: "line",
+        p1: { x: 360, y: 360 },
+        p2: { x: 360, y: 200 },
+        role: "obstacle",
+        label: "Singularity Field",
+        isFixed: true,
+        style: { strokeStyle: "#ef4444", lineWidth: 6, lineDash: [8, 4] }
+      },
+
+      // Target Backstop Shield
+      {
+        id: "target_backstop",
+        type: "line",
+        p1: { x: 230, y: 250 },
+        p2: { x: 230, y: 190 },
+        role: "obstacle",
+        label: "Receiver Backstop",
+        isFixed: true,
+        style: { strokeStyle: "#f43f5e", lineWidth: 4, lineDash: [6, 3] }
+      },
+
+      // Emitter S
+      {
+        id: "emitter_S",
+        type: "point",
+        x: 360,
+        y: 160,
+        role: "laser_source",
+        label: "Emitter Hub S",
+        isFixed: true,
+        style: { fillStyle: "#06b6d4", radius: 8 }
+      },
+      // Target Gamma
+      {
+        id: "target_Gamma",
+        type: "point",
+        x: 270,
+        y: 220,
+        role: "target",
+        label: "Target Gamma",
+        isFixed: true,
+        style: { fillStyle: "#10b981", radius: 10, pulsing: true }
+      }
+    ],
+    winCondition: {
+      type: "laser_hit_target",
+      targetId: "target_Gamma",
+      tolerance: 15,
+      minBounces: 4, // Strict 4-bounce perimeter loop!
+      maxBounces: 7,
+      successMessage: "SUCCESS: ELEGANT SOLUTION! Four-mirror resonator loop closed. Beam orbited the singularity into Target Gamma!"
+    }
+  },
+
+  // --------------------------------------------------------------------------
+  // LEVEL 9: THE ORTHIC PRISM (MULTI-ANGLE BILLIARD)
+  // --------------------------------------------------------------------------
+  {
+    id: "level-9",
+    title: "Level 9: The Orthic Prism",
+    subtitle: "Coordinate Transformation Across a 45° Slanted Cavity",
+    briefing: `Target Theta is protected inside a subterranean research bunker.
+Two horizontal mirrors and one 45-degree diagonal mirror form a high-precision optical cavity.
+A massive central security bulkhead prohibits direct lines of sight.
+
+Objective: Exploit 45° reflection vector swapping (u, v) -> (-v, -u) across Mirror Beta to route the beam through all three mirrors into Target Theta!`,
+    geometricTheory: `💡 Architect's Field Manual (Slanted Vector Transformation):
+Reflection across a line with equation x + y = c swaps and inverts velocity components:
+1. Aim Emitter S (160, 220) with slope -1/2 toward P1 (360, 120) on Mirror Alpha (Top).
+2. Mirror Alpha deflects the ray into slope +1/2 (direction [2, 1]) toward Mirror Beta (Slanted, x + y = 780).
+3. Striking Mirror Beta at P2 (560, 220), the velocity vector [2, 1] transforms into [-1, -2] (slope +2, upward-left).
+4. The beam strikes Mirror Gamma (Ceiling, y = 80) at P3 (490, 80) and deflects downward into Target Theta (330, 400)!`,
+    canvasSize: { width: 900, height: 560 },
+    availableTools: ["point", "line", "circle", "aim"],
+    emitterConfig: {
+      sourceId: "emitter_S",
+      defaultAngle: 0,
+      canAim: true
+    },
+    initialEntities: [
+      // Mirror Alpha: Top horizontal mirror (y = 120)
+      {
+        id: "mirror_orthic_1",
+        type: "line",
+        p1: { x: 240, y: 120 },
+        p2: { x: 440, y: 120 },
+        role: "mirror",
+        label: "Mirror Alpha (y=120)",
+        isFixed: true,
+        style: { strokeStyle: "#38bdf8", lineWidth: 4, glow: true }
+      },
+      // Mirror Beta: Slanted 45° mirror (x + y = 780)
+      {
+        id: "mirror_orthic_2",
+        type: "line",
+        p1: { x: 500, y: 280 },
+        p2: { x: 620, y: 160 },
+        role: "mirror",
+        label: "Mirror Beta (45° Slanted)",
+        isFixed: true,
+        style: { strokeStyle: "#38bdf8", lineWidth: 4, glow: true }
+      },
+      // Mirror Gamma: High ceiling mirror (y = 80)
+      {
+        id: "mirror_orthic_3",
+        type: "line",
+        p1: { x: 420, y: 80 },
+        p2: { x: 560, y: 80 },
+        role: "mirror",
+        label: "Mirror Gamma (y=80)",
+        isFixed: true,
+        style: { strokeStyle: "#38bdf8", lineWidth: 4, glow: true }
+      },
+
+      // Central Security Bulkhead
+      {
+        id: "bulkhead_vertical",
+        type: "line",
+        p1: { x: 260, y: 170 },
+        p2: { x: 260, y: 460 },
+        role: "obstacle",
+        label: "Central Bulkhead",
+        isFixed: true,
+        style: { strokeStyle: "#ef4444", lineWidth: 7, lineDash: [8, 4] }
+      },
+      {
+        id: "bulkhead_horizontal",
+        type: "line",
+        p1: { x: 260, y: 280 },
+        p2: { x: 460, y: 280 },
+        role: "obstacle",
+        label: "Containment Shield",
+        isFixed: true,
+        style: { strokeStyle: "#ef4444", lineWidth: 6, lineDash: [8, 4] }
+      },
+
+      // Emitter S (upper left)
+      {
+        id: "emitter_S",
+        type: "point",
+        x: 160,
+        y: 220,
+        role: "laser_source",
+        label: "Laser Hub S",
+        isFixed: true,
+        style: { fillStyle: "#06b6d4", radius: 8 }
+      },
+      // Target Theta (lower chamber)
+      {
+        id: "target_Theta",
+        type: "point",
+        x: 330,
+        y: 400,
+        role: "target",
+        label: "Receiver Theta",
+        isFixed: true,
+        style: { fillStyle: "#10b981", radius: 10, pulsing: true }
+      }
+    ],
+    winCondition: {
+      type: "laser_hit_target",
+      targetId: "target_Theta",
+      tolerance: 15,
+      minBounces: 3, // Must bounce 3 times!
+      maxBounces: 6,
+      successMessage: "SUCCESS: ELEGANT SOLUTION! Slanted cavity vector transformation solved. Quantum beam locked into Target Theta!"
+    }
+  },
+
+  // --------------------------------------------------------------------------
+  // LEVEL 10: THE GRANDMASTER LABYRINTH (FIVE-BOUNCE QUANTUM RELAY)
+  // --------------------------------------------------------------------------
+  {
+    id: "level-10",
+    title: "Level 10: The Grandmaster Labyrinth",
+    subtitle: "Five-Stage Quantum Relay Through the Citadel Maze",
+    briefing: `The ultimate examination of the Geometry Architect Academy.
+Target Omega Prime is sealed inside the fortified Inner Sanctum.
+Five tactical mirrors enclose the labyrinth chambers. A single fraction of a degree error will trigger the thermal containment field!
+
+Objective: Chain five consecutive reflections across all five mirrors (Top, Right, Bottom, Left, Sub-Ceiling) to breach the Inner Sanctum!`,
+    geometricTheory: `💡 Architect's Field Manual (Five-Stage Relay):
+Chain five symmetric 45° reflections across the citadel mirrors:
+1. Aim Emitter S (140, 280) with slope -1 toward P1 (340, 80) on Mirror Alpha (Top).
+2. The relay sequence executes:
+   - M1 (Top, y=80) at P1 (340, 80) -> down-right (slope +1)
+   - M2 (Right, x=640) at P2 (640, 380) -> down-left (slope -1)
+   - M3 (Bottom, y=480) at P3 (540, 480) -> up-left (slope +1)
+   - M4 (Left, x=240) at P4 (240, 180) -> up-right (slope -1)
+   - M5 (Sub-Ceiling, y=100) at P5 (320, 100) -> down-right (slope +1)
+3. Exiting M5, the beam enters the Inner Sanctum and strikes Target Omega Prime (480, 260) dead center!`,
+    canvasSize: { width: 900, height: 560 },
+    availableTools: ["point", "line", "circle", "aim"],
+    emitterConfig: {
+      sourceId: "emitter_S",
+      defaultAngle: 0,
+      canAim: true
+    },
+    initialEntities: [
+      // Mirror 1: Top horizontal (y = 80)
+      {
+        id: "mirror_lab_1",
+        type: "line",
+        p1: { x: 260, y: 80 },
+        p2: { x: 420, y: 80 },
+        role: "mirror",
+        label: "Mirror Alpha (y=80)",
+        isFixed: true,
+        style: { strokeStyle: "#38bdf8", lineWidth: 4, glow: true }
+      },
+      // Mirror 2: Right vertical (x = 640)
+      {
+        id: "mirror_lab_2",
+        type: "line",
+        p1: { x: 640, y: 300 },
+        p2: { x: 640, y: 460 },
+        role: "mirror",
+        label: "Mirror Beta (x=640)",
+        isFixed: true,
+        style: { strokeStyle: "#38bdf8", lineWidth: 4, glow: true }
+      },
+      // Mirror 3: Bottom horizontal (y = 480)
+      {
+        id: "mirror_lab_3",
+        type: "line",
+        p1: { x: 460, y: 480 },
+        p2: { x: 600, y: 480 },
+        role: "mirror",
+        label: "Mirror Gamma (y=480)",
+        isFixed: true,
+        style: { strokeStyle: "#38bdf8", lineWidth: 4, glow: true }
+      },
+      // Mirror 4: Left vertical (x = 240)
+      {
+        id: "mirror_lab_4",
+        type: "line",
+        p1: { x: 240, y: 120 },
+        p2: { x: 240, y: 260 },
+        role: "mirror",
+        label: "Mirror Delta (x=240)",
+        isFixed: true,
+        style: { strokeStyle: "#38bdf8", lineWidth: 4, glow: true }
+      },
+      // Mirror 5: Sub-Ceiling horizontal (y = 100)
+      {
+        id: "mirror_lab_5",
+        type: "line",
+        p1: { x: 260, y: 100 },
+        p2: { x: 380, y: 100 },
+        role: "mirror",
+        label: "Mirror Epsilon (y=100)",
+        isFixed: true,
+        style: { strokeStyle: "#38bdf8", lineWidth: 4, glow: true }
+      },
+
+      // Inner Sanctum Maze Barriers
+      {
+        id: "maze_wall_1",
+        type: "line",
+        p1: { x: 440, y: 130 },
+        p2: { x: 440, y: 210 },
+        role: "obstacle",
+        label: "Sanctum Wall 1",
+        isFixed: true,
+        style: { strokeStyle: "#ef4444", lineWidth: 6, lineDash: [8, 4] }
+      },
+      {
+        id: "maze_wall_2",
+        type: "line",
+        p1: { x: 380, y: 300 },
+        p2: { x: 560, y: 300 },
+        role: "obstacle",
+        label: "Sanctum Wall 2",
+        isFixed: true,
+        style: { strokeStyle: "#ef4444", lineWidth: 6, lineDash: [8, 4] }
+      },
+      {
+        id: "maze_wall_3",
+        type: "line",
+        p1: { x: 530, y: 160 },
+        p2: { x: 530, y: 300 },
+        role: "obstacle",
+        label: "Sanctum Wall 3",
+        isFixed: true,
+        style: { strokeStyle: "#ef4444", lineWidth: 6, lineDash: [8, 4] }
+      },
+
+      // Emitter S
+      {
+        id: "emitter_S",
+        type: "point",
+        x: 140,
+        y: 280,
+        role: "laser_source",
+        label: "Grandmaster Emitter S",
+        isFixed: true,
+        style: { fillStyle: "#06b6d4", radius: 8 }
+      },
+      // Target Omega Prime
+      {
+        id: "target_Omega_Prime",
+        type: "point",
+        x: 480,
+        y: 260,
+        role: "target",
+        label: "Target Omega Prime",
+        isFixed: true,
+        style: { fillStyle: "#10b981", radius: 10, pulsing: true }
+      }
+    ],
+    winCondition: {
+      type: "laser_hit_target",
+      targetId: "target_Omega_Prime",
+      tolerance: 15,
+      minBounces: 5, // Master 5-bounce challenge!
+      maxBounces: 8,
+      successMessage: "SUCCESS: ELEGANT SOLUTION! Grandmaster 5-stage labyrinth solved. Citadel Inner Sanctum breached!"
+    }
+  },
+  // --------------------------------------------------------------------------
+  // LEVEL 1: FIRST REFLECTION
+  // --------------------------------------------------------------------------
+  {
+    id: "level-11",
+    title: "Level 11: First Reflection",
+    subtitle: "Hero of Alexandria's Principle of Reflection",
+    briefing: `Exploration Vessel ALPHA must transmit a quantum laser signal to Receiver BETA.
+A dense dark matter wall directly blocks the line of sight. The beam must bounce off the 'Speculum Nano-Mirror' once to reach its destination.
+
+Objective: Use Euclidean geometry to find the exact point of reflection on the mirror, then aim the laser emitter to strike Receiver BETA!`,
+    geometricTheory: `💡 Architect's Field Manual (Hero of Alexandria):
+Light follows the path of least distance!
+1. Reflect target point B across the mirror line to find its virtual image B' (draw a perpendicular line and measure equal distance).
+2. Connect emitter A to virtual image B' with a straight line.
+3. The intersection point of line AB' with the mirror is the "Perfect Reflection Point" (where Angle of Incidence = Angle of Reflection).
+4. Aim the laser emitter from A straight toward that intersection point!`,
+    canvasSize: { width: 900, height: 560 },
+    availableTools: ["point", "line", "circle", "aim"],
+    emitterConfig: {
+      sourceId: "emitter_A",
+      defaultAngle: -45,
+      canAim: true
+    },
+    initialEntities: [
+      {
+        id: "node_a_1791298919126",
+        type: "point",
+        x: 520,
+        y: 180,
+        role: "shield_node",
+        label: "Node A",
+        isFixed: true,
+        style: { "fillStyle": "#3b82f6", "radius": 7 }
+      },
+      {
+        id: "node_b_1791298919501",
+        type: "point",
+        x: 380,
+        y: 300,
+        role: "shield_node",
+        label: "Node B",
+        isFixed: true,
+        style: { "fillStyle": "#3b82f6", "radius": 7 }
+      },
+      {
+        id: "node_c_1791298919813",
+        type: "point",
+        x: 620,
+        y: 380,
+        role: "shield_node",
+        label: "Node C",
+        isFixed: true,
+        style: { "fillStyle": "#3b82f6", "radius": 7 }
+      },
+      {
+        id: "node_d_1791298920133",
+        type: "point",
+        x: 620,
+        y: 440,
+        role: "shield_node",
+        label: "Node D",
+        isFixed: true,
+        style: { "fillStyle": "#3b82f6", "radius": 7 }
+      },
+      {
+        id: "node_e_1791298920414",
+        type: "point",
+        x: 440,
+        y: 480,
+        role: "shield_node",
+        label: "Node E",
+        isFixed: true,
+        style: { "fillStyle": "#3b82f6", "radius": 7 }
+      },
+      {
+        id: "node_f_1791298920704",
+        type: "point",
+        x: 660,
+        y: 200,
+        role: "shield_node",
+        label: "Node F",
+        isFixed: true,
+        style: { "fillStyle": "#3b82f6", "radius": 7 }
+      },
+      {
+        id: "emitter_A",
+        type: "point",
+        x: 200,
+        y: 120,
+        role: "laser_source",
+        label: "Emitter Alpha (A)",
+        isFixed: true,
+        style: { "fillStyle": "#06b6d4", "radius": 8 }
+      },
+      {
+        id: "target_B",
+        type: "point",
+        x: 820,
+        y: 260,
+        role: "target",
+        label: "Receiver Beta (B)",
+        isFixed: true,
+        style: { "fillStyle": "#10b981", "radius": 10, "pulsing": true }
+      },
+      {
+        id: "guide_1791298930549",
+        type: "line",
+        p1: { x: 440, y: 100 },
+        p2: { x: 340, y: 220 },
+        role: "guide",
+        label: "Guide G1",
+        isFixed: true,
+        style: { "strokeStyle": "#64748b", "lineWidth": 1.5, "lineDash": [5, 5] }
+      },
+      {
+        id: "barrier_1791298932655",
+        type: "line",
+        p1: { x: 500, y: 120 },
+        p2: { x: 240, y: 380 },
+        role: "obstacle",
+        label: "Barrier W1",
+        isFixed: true,
+        style: { "strokeStyle": "#ef4444", "lineWidth": 6, "lineDash": [8, 4] }
+      },
+      {
+        id: "mirror_1791298935093",
+        type: "line",
+        p1: { x: 590, y: 20 },
+        p2: { x: 900, y: 110 },
+        role: "mirror",
+        label: "Mirror M1",
+        isFixed: true,
+        style: { "strokeStyle": "#38bdf8", "lineWidth": 4, "glow": true }
+      },
+      {
+        id: "mirror_1791298936413",
+        type: "line",
+        p1: { x: 760, y: 260 },
+        p2: { x: 480, y: 520 },
+        role: "mirror",
+        label: "Mirror M2",
+        isFixed: true,
+        style: { "strokeStyle": "#38bdf8", "lineWidth": 4, "glow": true }
+      },
+      {
+        id: "mirror_1791298937878",
+        type: "line",
+        p1: { x: 500, y: 320 },
+        p2: { x: 268, y: 329 },
+        role: "mirror",
+        label: "Mirror M3",
+        isFixed: true,
+        style: { "strokeStyle": "#38bdf8", "lineWidth": 4, "glow": true }
+      },
+      {
+        id: "mirror_1791298938790",
+        type: "line",
+        p1: { x: 260, y: 420 },
+        p2: { x: 60, y: 460 },
+        role: "mirror",
+        label: "Mirror M4",
+        isFixed: true,
+        style: { "strokeStyle": "#38bdf8", "lineWidth": 4, "glow": true }
+      },
+      {
+        id: "mirror_1791298940071",
+        type: "line",
+        p1: { x: 60, y: 540 },
+        p2: { x: 380, y: 480 },
+        role: "mirror",
+        label: "Mirror M5",
+        isFixed: true,
+        style: { "strokeStyle": "#38bdf8", "lineWidth": 4, "glow": true }
+      }
+    ],
+    winCondition: {
+      type: "laser_hit_target",
+      targetId: "target_B",
+      tolerance: 10,
+      minBounces: 1,
+      maxBounces: 4,
+      successMessage: "SUCCESS: Quantum signal established with 1+ reflection!"
+    }
+  },
 ];
 
 if (typeof window !== 'undefined') {
